@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}About - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+
+      <!-- Hero Header -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-navy) 100%); color: #ffffff;">
+        <div class="card-body p-4 p-md-5">
+          <span class="badge bg-teal px-3 py-2 rounded-pill text-uppercase mb-3">Academic College Project</span>
+          <h1 class="fw-bold mb-3">About CampusFind</h1>
+          <p class="lead text-light mb-0">
+            A centralized, smart Lost &amp; Found management ecosystem engineered specifically to solve campus loss recovery challenges.
+          </p>
+        </div>
+      </div>
+
+      <!-- Core Problem & Solution Grid -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-circle bg-danger bg-opacity-10 text-danger fs-4">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-0 text-navy">The Core Problem</h3>
+              </div>
+              <p class="text-secondary">
+                On university campuses, thousands of items (student ID cards, textbooks, keys, water bottles, and expensive electronics like laptops or earbuds) are misplaced each semester.
+              </p>
+              <ul class="text-secondary small">
+                <li class="mb-2"><strong>Fragmented Channels:</strong> Lost items are posted randomly on unorganized WhatsApp groups, unofficial Instagram pages, or physical notice boards where posts are quickly buried.</li>
+                <li class="mb-2"><strong>No Centralized Search:</strong> Students have no easy way to filter by location, category, or date to see if their item has already been turned in.</li>
+                <li class="mb-2"><strong>Fraudulent Claims &amp; Privacy Risks:</strong> Anyone can claim an item falsely without proof, and finders hesitate to post their personal phone numbers publicly.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success fs-4">
+                  <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-0 text-navy">Our Approach</h3>
+              </div>
+              <p class="text-secondary">
+                <strong>CampusFind</strong> provides an automated, privacy-first web application accessible across both desktop and mobile web browsers:
+              </p>
+              <ul class="text-secondary small">
+                <li class="mb-2"><strong>Intelligent Auto-Matching:</strong> A multi-criteria matching engine in Python evaluates new posts against open posts to alert owners automatically.</li>
+                <li class="mb-2"><strong>Cryptographic Verification:</strong> Finders configure a secret question. Claimants must answer correctly to unlock contact details, with a 3-attempt safety lock.</li>
+                <li class="mb-2"><strong>Privacy &amp; Moderation:</strong> Contact details and verification answers are never exposed publicly, and administrative tools prevent misuse.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matching Algorithm Explained (Great for Viva) -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h4 class="fw-bold mb-0 text-navy">
+            <i class="fa-solid fa-calculator text-teal me-2"></i>The Auto-Matching Algorithm (matching.py)
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <p class="text-secondary">
+            When any item is posted or updated, the system executes an automated compatibility calculation against all active posts of the opposite type. The score is calculated out of 100 points:
+          </p>
+
+          <div class="row g-3 text-center my-3">
+            <div class="col-6 col-md-3">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="fs-2 fw-bold text-teal">40 Pts</div>
+                <div class="fw-semibold small text-navy">Category Match</div>
+                <div class="text-muted small">Strict category equality</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="fs-2 fw-bold text-teal">25 Pts</div>
+                <div class="fw-semibold small text-navy">Location Match</div>
+                <div class="text-muted small">Exact, substring, or token</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="fs-2 fw-bold text-teal">15 Pts</div>
+                <div class="fw-semibold small text-navy">Date Match</div>
+                <div class="text-muted small">Within 3 days window</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="p-3 rounded-3 bg-light border">
+                <div class="fs-2 fw-bold text-teal">20 Pts</div>
+                <div class="fw-semibold small text-navy">Keyword Overlap</div>
+                <div class="text-muted small">5 pts per shared word</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info d-flex align-items-center mb-0 mt-3" role="alert">
+            <i class="fa-solid fa-circle-check fs-4 me-3"></i>
+            <div>
+              <strong>Match Threshold:</strong> Any pair scoring <strong>60 points or higher</strong> is immediately registered as a verified match. The system records the match in the database and delivers instant in-app alerts to both the owner and finder.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Author Card -->
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 d-flex align-items-center gap-4 flex-wrap">
+          <div class="p-3 rounded-circle bg-teal text-white fs-1 text-center" style="width: 75px; height: 75px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary mb-1">Developer &amp; Project Lead</span>
+            <h3 class="fw-bold mb-1 text-navy">Amishka Sisodiya</h3>
+            <p class="text-muted mb-0">
+              Designed and built for College Project Presentation and Viva Examination.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}CampusFind - Smart Campus Lost & Found{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container position-relative" style="z-index: 2;">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="badge bg-teal text-white mb-3 px-3 py-2 fs-6 rounded-pill">
+          <i class="fa-solid fa-graduation-cap me-2"></i>Official Campus Recovery Network
+        </span>
+        <h1 class="hero-title text-white">
+          Lost something on campus? <br>
+          <span style="color: var(--teal-accent);">Find it here.</span>
+        </h1>
+        <p class="hero-subtitle">
+          The centralized, searchable, and verified platform connecting students and staff. Never lose your ID cards, electronics, or personal valuables again.
+        </p>
+
+        <!-- Quick Action CTAs -->
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('post_item', type='lost') }}" class="btn btn-danger btn-lg px-4 shadow">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> Report Lost Item
+          </a>
+          <a href="{{ url_for('post_item', type='found') }}" class="btn btn-teal btn-lg px-4 shadow">
+            <i class="fa-solid fa-hand-holding-heart me-2"></i> Report Found Item
+          </a>
+          <a href="{{ url_for('browse') }}" class="btn btn-outline-light btn-lg px-4">
+            <i class="fa-solid fa-magnifying-glass me-2"></i> Browse Directory
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Platform Stats -->
+      <div class="col-lg-5">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="hero-stat-card">
+              <div class="hero-stat-num">{{ stats.lost_count or 0 }}</div>
+              <div class="hero-stat-label">Lost Reports</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="hero-stat-card">
+              <div class="hero-stat-num">{{ stats.found_count or 0 }}</div>
+              <div class="hero-stat-label">Found Items</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="hero-stat-card">
+              <div class="hero-stat-num text-success">{{ stats.returned_count or 0 }}</div>
+              <div class="hero-stat-label">Successfully Returned to Owners</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold" style="color: var(--primary-navy);">How It Works</h2>
+      <p class="text-muted">A secure 4-step recovery pipeline designed specifically for campus life.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Post</h3>
+          <p class="step-desc">
+            Submit a Lost or Found report in under 60 seconds with category, campus location, and description.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Search</h3>
+          <p class="step-desc">
+            Instantly browse and filter by keyword, category, campus zones, and date with sub-second response times.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Auto-match</h3>
+          <p class="step-desc">
+            Our 4-factor scoring algorithm automatically analyzes category, location, dates, and keywords to notify both parties.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Verify &amp; Claim</h3>
+          <p class="step-desc">
+            The owner answers the finder's secret verification question. Once validated, contact details are safely unlocked.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Items Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="fw-bold mb-1" style="color: var(--primary-navy);">Recent Campus Listings</h2>
+        <p class="text-muted mb-0">Latest items reported across campus buildings and grounds</p>
+      </div>
+      <a href="{{ url_for('browse') }}" class="btn btn-outline-teal">
+        View All Listings <i class="fa-solid fa-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    {% if recent_items %}
+    <div class="row g-4">
+      {% for item in recent_items %}
+      <div class="col-md-6 col-lg-4">
+        <div class="item-card">
+          <div class="item-card-img-wrap">
+            {% if item.photo_path %}
+              <img src="{{ url_for('static', filename=item.photo_path) }}" alt="{{ item.title }}" class="item-card-img">
+            {% else %}
+              <div class="item-card-placeholder">
+                {% if item.category == 'ID card' %}
+                  <i class="fa-solid fa-id-card"></i>
+                {% elif item.category == 'electronics' %}
+                  <i class="fa-solid fa-laptop"></i>
+                {% elif item.category == 'books' %}
+                  <i class="fa-solid fa-book"></i>
+                {% elif item.category == 'keys' %}
+                  <i class="fa-solid fa-key"></i>
+                {% elif item.category == 'bottle' %}
+                  <i class="fa-solid fa-bottle-water"></i>
+                {% elif item.category == 'clothing' %}
+                  <i class="fa-solid fa-shirt"></i>
+                {% else %}
+                  <i class="fa-solid fa-box-open"></i>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            <!-- Type Badge -->
+            <span class="badge-type {% if item.type == 'lost' %}badge-type-lost{% else %}badge-type-found{% endif %}">
+              {{ item.type | upper }}
+            </span>
+          </div>
+
+          <div class="item-card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-secondary-subtle text-dark border">{{ item.category }}</span>
+              <span class="badge-status status-{{ item.status | lower }}">{{ item.status }}</span>
+            </div>
+
+            <h4 class="item-title text-truncate">{{ item.title }}</h4>
+
+            <div class="item-meta">
+              <span><i class="fa-solid fa-location-dot text-danger me-1"></i>{{ item.location }}</span>
+              <span>&bull;</span>
+              <span><i class="fa-regular fa-calendar text-teal me-1"></i>{{ item.date }}</span>
+            </div>
+
+            <p class="item-desc">{{ item.description | truncate(100) }}</p>
+
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
+              <small class="text-muted">By {{ item.user_name }}</small>
+              <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-sm btn-teal">
+                View Details <i class="fa-solid fa-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 bg-white rounded border">
+      <i class="fa-solid fa-box-archive text-muted fs-1 mb-3"></i>
+      <h4 class="fw-bold">No active listings yet</h4>
+      <p class="text-muted">Be the first to report a lost or found item on campus!</p>
+      <a href="{{ url_for('post_item', type='lost') }}" class="btn btn-teal">Post an Item</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,475 @@
+/*
+ * CampusFind: Smart Campus Lost & Found
+ * Custom Teal & Navy Responsive Stylesheet
+ * Author: Amishka Sisodiya
+ */
+
+:root {
+  --primary-navy: #0f2b48;
+  --secondary-navy: #16385c;
+  --dark-navy: #0a1b2d;
+  --primary-teal: #0d9488;
+  --teal-hover: #0f766e;
+  --teal-light: #ccfbf1;
+  --teal-accent: #14b8a6;
+  --bg-light: #f8fafc;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-muted: #64748b;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --shadow-sm: 0 1px 3px rgba(15, 43, 72, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(15, 43, 72, 0.1), 0 2px 4px -2px rgba(15, 43, 72, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 43, 72, 0.12), 0 4px 6px -4px rgba(15, 43, 72, 0.08);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* -------------------------------------------------------------
+ * Sticky Navbar
+ * ------------------------------------------------------------- */
+.navbar-custom {
+  background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-navy) 100%);
+  border-bottom: 2px solid var(--primary-teal);
+  box-shadow: var(--shadow-md);
+  padding: 0.75rem 0;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.navbar-brand .brand-badge {
+  background: var(--primary-teal);
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.nav-link {
+  color: #cbd5e1 !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: #ffffff !important;
+  background-color: rgba(13, 148, 136, 0.2);
+}
+
+.nav-link .notif-badge {
+  position: relative;
+  top: -8px;
+  margin-left: -4px;
+}
+
+/* -------------------------------------------------------------
+ * Buttons
+ * ------------------------------------------------------------- */
+.btn-teal {
+  background-color: var(--primary-teal);
+  border-color: var(--primary-teal);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.btn-teal:hover, .btn-teal:focus {
+  background-color: var(--teal-hover);
+  border-color: var(--teal-hover);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+}
+
+.btn-outline-teal {
+  background-color: transparent;
+  border: 1.5px solid var(--primary-teal);
+  color: var(--primary-teal);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.btn-outline-teal:hover {
+  background-color: var(--primary-teal);
+  color: #ffffff;
+}
+
+.btn-navy {
+  background-color: var(--primary-navy);
+  border-color: var(--primary-navy);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+.btn-navy:hover {
+  background-color: var(--secondary-navy);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+ * Hero Section
+ * ------------------------------------------------------------- */
+.hero-section {
+  background: radial-gradient(circle at top right, #16385c 0%, var(--dark-navy) 100%);
+  color: #ffffff;
+  padding: 4.5rem 0 3.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: #cbd5e1;
+  max-width: 650px;
+  margin-top: 1rem;
+}
+
+.hero-stat-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.hero-stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--teal-accent);
+}
+
+.hero-stat-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* -------------------------------------------------------------
+ * How It Works
+ * ------------------------------------------------------------- */
+.step-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  height: 100%;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-teal);
+}
+
+.step-number {
+  width: 44px;
+  height: 44px;
+  background: var(--teal-light);
+  color: var(--primary-teal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 auto 1rem auto;
+}
+
+.step-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-bottom: 0.5rem;
+}
+
+.step-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------------------
+ * Item Cards
+ * ------------------------------------------------------------- */
+.item-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: #cbd5e1;
+}
+
+.item-card-img-wrap {
+  width: 100%;
+  height: 180px;
+  background-color: #f1f5f9;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.item-card:hover .item-card-img {
+  transform: scale(1.05);
+}
+
+.item-card-placeholder {
+  color: #94a3b8;
+  font-size: 3rem;
+}
+
+.badge-type {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-type-lost {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.badge-type-found {
+  background-color: var(--primary-teal);
+  color: #ffffff;
+}
+
+.badge-status {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.status-open {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-matched {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-claimed {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.status-returned {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.item-card-body {
+  padding: 1.25rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.item-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-desc {
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  flex: 1 0 auto;
+}
+
+/* -------------------------------------------------------------
+ * Filter and Search Bar
+ * ------------------------------------------------------------- */
+.filter-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input-group .form-control {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  border-right: none;
+}
+
+.search-input-group .btn {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* -------------------------------------------------------------
+ * Match Card in My Posts
+ * ------------------------------------------------------------- */
+.match-card {
+  background: #fdfdfd;
+  border: 1.5px dashed var(--primary-teal);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-top: 0.75rem;
+  background-color: #f0fdfa;
+}
+
+.match-score-badge {
+  background: linear-gradient(135deg, var(--primary-teal), #047857);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+/* -------------------------------------------------------------
+ * Footer
+ * ------------------------------------------------------------- */
+.footer-custom {
+  background-color: var(--dark-navy);
+  color: #94a3b8;
+  border-top: 3px solid var(--primary-teal);
+  padding: 3rem 0 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.footer-custom h5 {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.footer-custom a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-custom a:hover {
+  color: var(--teal-accent);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.footer-author-badge {
+  color: var(--teal-accent);
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------
+ * Responsive Tweaks
+ * ------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  .hero-section {
+    padding: 3rem 0 2rem 0;
+  }
+  .item-card-img-wrap {
+    height: 150px;
+  }
+}

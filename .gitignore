@@ -1,0 +1,23 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & environments
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+env/
+.env
+
+# Uploads & local SQLite DB (optional)
+*.log
+static/uploads/*
+!static/uploads/.gitkeep
+# Local database
+*.db
+
+# Python cache
+__pycache__/
+

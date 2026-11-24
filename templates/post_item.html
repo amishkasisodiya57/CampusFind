@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Post Item - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="p-4" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-navy) 100%); color: #ffffff;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <h2 class="fw-bold mb-1">
+                {% if item_type == 'lost' %}
+                  <i class="fa-solid fa-circle-exclamation text-danger me-2"></i>Report Lost Item
+                {% else %}
+                  <i class="fa-solid fa-hand-holding-heart text-teal me-2"></i>Report Found Item
+                {% endif %}
+              </h2>
+              <p class="text-secondary small mb-0">Complete the form below to broadcast across the campus network.</p>
+            </div>
+            <span class="badge bg-light text-dark px-3 py-2 fw-semibold">Quick 60s Post</span>
+          </div>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" action="{{ url_for('post_item') }}" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <!-- Post Type Selector -->
+            <div class="mb-4">
+              <label class="form-label fw-bold">Report Type <span class="text-danger">*</span></label>
+              <div class="d-flex gap-3">
+                <div class="form-check card-radio p-3 border rounded-3 flex-fill text-center {% if item_type == 'lost' %}border-danger bg-danger-subtle{% endif %}">
+                  <input class="form-check-input d-none" type="radio" name="type" id="typeLost" value="lost" {% if item_type == 'lost' %}checked{% endif %}>
+                  <label class="form-check-label w-100 cursor-pointer" for="typeLost">
+                    <i class="fa-solid fa-circle-exclamation text-danger fs-4 d-block mb-1"></i>
+                    <strong class="text-danger">I Lost An Item</strong>
+                  </label>
+                </div>
+
+                <div class="form-check card-radio p-3 border rounded-3 flex-fill text-center {% if item_type == 'found' %}border-teal bg-teal-subtle{% endif %}">
+                  <input class="form-check-input d-none" type="radio" name="type" id="typeFound" value="found" {% if item_type == 'found' %}checked{% endif %}>
+                  <label class="form-check-label w-100 cursor-pointer" for="typeFound">
+                    <i class="fa-solid fa-hand-holding-heart text-teal fs-4 d-block mb-1"></i>
+                    <strong class="text-teal">I Found An Item</strong>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Item Title / Headline <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-lg" id="title" name="title" value="{{ form_data.get('title', '') }}" placeholder="e.g. Blue Dell Inspiron Laptop or College ID Card" required>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <!-- Category -->
+              <div class="col-md-6">
+                <label for="category" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="" disabled {% if not form_data.get('category') %}selected{% endif %}>Select category...</option>
+                  {% for cat in valid_categories %}
+                    <option value="{{ cat }}" {% if form_data.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Campus Location -->
+              <div class="col-md-6">
+                <label for="location" class="form-label fw-semibold">Campus Location <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="location" name="location" value="{{ form_data.get('location', '') }}" placeholder="e.g. Central Library 2nd Floor, Main Canteen" required>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <!-- Date -->
+              <div class="col-md-6">
+                <label for="itemDate" class="form-label fw-semibold">Date Lost or Found <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="itemDate" name="date" value="{{ form_data.get('date', '') }}" required>
+              </div>
+
+              <!-- Optional Photo -->
+              <div class="col-md-6">
+                <label for="photoInput" class="form-label fw-semibold">Photo (Optional, max 5 MB)</label>
+                <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*">
+              </div>
+            </div>
+
+            <!-- Image Preview Box -->
+            <div id="photoPreview" class="mb-3 d-none">
+              <div class="card p-2 border bg-light d-inline-block">
+                <img id="previewImg" src="#" alt="Preview" style="max-height: 140px; border-radius: 6px;">
+                <div class="small text-muted mt-1 text-center">Selected Photo Preview</div>
+              </div>
+            </div>
+
+            <!-- Detailed Description -->
+            <div class="mb-4">
+              <label for="description" class="form-label fw-semibold">Detailed Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="description" name="description" rows="4" placeholder="Provide distinct characteristics, color, brand, stickers, cover, or condition..." required>{{ form_data.get('description', '') }}</textarea>
+              <div class="form-text">Our auto-matcher scans descriptive keywords to pair items accurately.</div>
+            </div>
+
+            <!-- Verification Question & Answer (Required for Found items) -->
+            <div id="foundVerificationGroup" class="p-3 mb-4 rounded-3 border bg-light {% if item_type != 'found' %}d-none{% endif %}">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-shield-halved text-teal fs-5"></i>
+                <h5 class="fw-bold mb-0 text-navy">Ownership Verification (Found Items Only)</h5>
+              </div>
+              <p class="small text-muted mb-3">
+                To prevent false claims, ask a question that only the real owner can answer. The answer is hashed for security and never revealed publicly.
+              </p>
+
+              <div class="mb-3">
+                <label for="verification_question" class="form-label fw-semibold">Verification Question <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="verification_question" name="verification_question" value="{{ form_data.get('verification_question', '') }}" placeholder="e.g. What is written on the keychain? / What sticker is on the laptop lid?">
+              </div>
+
+              <div class="mb-2">
+                <label for="verification_answer" class="form-label fw-semibold">Secret Answer <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="verification_answer" name="verification_answer" value="{{ form_data.get('verification_answer', '') }}" placeholder="e.g. Batman / NASA sticker / Blue dragon">
+                <div class="form-text text-success"><i class="fa-solid fa-lock me-1"></i>Answer will be trimmed, lowercased, and securely hashed.</div>
+              </div>
+            </div>
+
+            <!-- Submit Button (Click #3 after login) -->
+            <button type="submit" class="btn btn-teal btn-lg w-100 py-3 fw-bold shadow">
+              <i class="fa-solid fa-paper-plane me-2"></i> Submit Campus Post
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

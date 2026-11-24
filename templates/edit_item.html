@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="p-4" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-navy) 100%); color: #ffffff;">
+          <h2 class="fw-bold mb-1"><i class="fa-solid fa-pen-to-square text-teal me-2"></i>Edit Post</h2>
+          <p class="text-secondary small mb-0">Update listing details, status, or photo.</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" action="{{ url_for('edit_item', item_id=item.id) }}" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Item Title</label>
+              <input type="text" class="form-control" id="title" name="title" value="{{ item.title }}" required>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="category" class="form-label fw-semibold">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                  {% for cat in valid_categories %}
+                    <option value="{{ cat }}" {% if item.category == cat %}selected{% endif %}>{{ cat }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="status" class="form-label fw-semibold">Status</label>
+                <select class="form-select" id="status" name="status" required>
+                  <option value="Open" {% if item.status == 'Open' %}selected{% endif %}>Open</option>
+                  <option value="Matched" {% if item.status == 'Matched' %}selected{% endif %}>Matched</option>
+                  <option value="Claimed" {% if item.status == 'Claimed' %}selected{% endif %}>Claimed</option>
+                  <option value="Returned" {% if item.status == 'Returned' %}selected{% endif %}>Returned</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="location" class="form-label fw-semibold">Location</label>
+                <input type="text" class="form-control" id="location" name="location" value="{{ item.location }}" required>
+              </div>
+
+              <div class="col-md-6">
+                <label for="itemDate" class="form-label fw-semibold">Date</label>
+                <input type="date" class="form-control" id="itemDate" name="date" value="{{ item.date }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="4" required>{{ item.description }}</textarea>
+            </div>
+
+            <!-- Current / New Photo -->
+            <div class="mb-3">
+              <label for="photoInput" class="form-label fw-semibold">Update Photo (Optional, max 5 MB)</label>
+              {% if item.photo_path %}
+                <div class="mb-2">
+                  <small class="text-muted d-block mb-1">Current Photo:</small>
+                  <img src="{{ url_for('static', filename=item.photo_path) }}" alt="Current Photo" style="max-height: 100px; border-radius: 6px;">
+                </div>
+              {% endif %}
+              <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*">
+            </div>
+
+            <div id="photoPreview" class="mb-3 d-none">
+              <img id="previewImg" src="#" alt="New Preview" style="max-height: 120px; border-radius: 6px;">
+            </div>
+
+            <!-- Verification Question for Found Items -->
+            {% if item.type == 'found' %}
+            <div class="p-3 mb-4 rounded-3 border bg-light">
+              <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-shield-halved text-teal me-1"></i>Verification Question &amp; Answer</h6>
+              <div class="mb-3">
+                <label for="verification_question" class="form-label small fw-semibold">Verification Question</label>
+                <input type="text" class="form-control" id="verification_question" name="verification_question" value="{{ item.verification_question or '' }}">
+              </div>
+              <div class="mb-2">
+                <label for="verification_answer" class="form-label small fw-semibold">New Secret Answer (leave blank to keep existing)</label>
+                <input type="text" class="form-control" id="verification_answer" name="verification_answer" placeholder="Enter new secret answer">
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-between pt-3 border-top">
+              <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-outline-secondary">Cancel</a>
+              <button type="submit" class="btn btn-teal px-4">
+                <i class="fa-solid fa-save me-1"></i> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+      <div class="card border-0 shadow-sm rounded-4 p-5">
+        <div class="mb-3">
+          <i class="fa-solid fa-compass display-1 text-teal"></i>
+        </div>
+        <h1 class="display-5 fw-bold text-navy mb-2">404</h1>
+        <h4 class="fw-bold mb-3">Item or Page Not Found</h4>
+        <p class="text-secondary mb-4">
+          {{ message or "The page or item listing you are looking for might have been removed, had its name changed, or is temporarily unavailable." }}
+        </p>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-house me-1"></i> Return Home
+          </a>
+          <a href="{{ url_for('browse') }}" class="btn btn-teal">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Browse Items
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

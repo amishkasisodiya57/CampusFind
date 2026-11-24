@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('browse') }}" class="text-teal text-decoration-none">Campus Directory</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ item.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- Left Column: Item Image & Key Info -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <!-- Photo Container -->
+        <div class="item-detail-img-wrap bg-light text-center p-4" style="min-height: 280px; display: flex; align-items: center; justify-content: center;">
+          {% if item.photo_path %}
+            <img src="{{ url_for('static', filename=item.photo_path) }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 380px; object-fit: contain;">
+          {% else %}
+            <div class="text-muted py-5">
+              {% if item.category == 'ID card' %}
+                <i class="fa-solid fa-id-card display-1 text-secondary opacity-50"></i>
+              {% elif item.category == 'electronics' %}
+                <i class="fa-solid fa-laptop display-1 text-secondary opacity-50"></i>
+              {% elif item.category == 'books' %}
+                <i class="fa-solid fa-book display-1 text-secondary opacity-50"></i>
+              {% elif item.category == 'keys' %}
+                <i class="fa-solid fa-key display-1 text-secondary opacity-50"></i>
+              {% elif item.category == 'bottle' %}
+                <i class="fa-solid fa-bottle-water display-1 text-secondary opacity-50"></i>
+              {% elif item.category == 'clothing' %}
+                <i class="fa-solid fa-shirt display-1 text-secondary opacity-50"></i>
+              {% else %}
+                <i class="fa-solid fa-box-open display-1 text-secondary opacity-50"></i>
+              {% endif %}
+              <div class="mt-2 small text-secondary">No photo uploaded</div>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <span class="badge-type position-static {% if item.type == 'lost' %}badge-type-lost{% else %}badge-type-found{% endif %}">
+              {{ item.type | upper }}
+            </span>
+            <div class="d-flex gap-2">
+              <span class="badge bg-secondary-subtle text-dark border px-3 py-2">{{ item.category }}</span>
+              <span class="badge-status status-{{ item.status | lower }} px-3 py-2 fs-6">{{ item.status }}</span>
+            </div>
+          </div>
+
+          <h2 class="fw-bold text-navy mb-3">{{ item.title }}</h2>
+
+          <!-- Meta Grid -->
+          <div class="row g-2 p-3 bg-light rounded-3 mb-4">
+            <div class="col-sm-6">
+              <div class="small text-muted">Campus Location</div>
+              <div class="fw-semibold text-navy"><i class="fa-solid fa-location-dot text-danger me-1"></i>{{ item.location }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="small text-muted">Date Reported</div>
+              <div class="fw-semibold text-navy"><i class="fa-regular fa-calendar text-teal me-1"></i>{{ item.date }}</div>
+            </div>
+          </div>
+
+          <h5 class="fw-bold text-navy mb-2">Item Description</h5>
+          <p class="text-secondary leading-relaxed mb-4" style="white-space: pre-line;">{{ item.description }}</p>
+
+          <div class="pt-3 border-top d-flex justify-content-between align-items-center text-muted small">
+            <div>Reported by: <strong>{{ item.user_name }}</strong></div>
+            <div>Post ID: #{{ item.id }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner & Admin Action Controls -->
+      {% if is_owner or (current_user and current_user.role == 'admin') %}
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3 d-flex gap-2 justify-content-between align-items-center flex-wrap">
+          <span class="small text-muted fw-semibold">
+            <i class="fa-solid fa-gear me-1"></i>
+            {% if is_owner %}You are the author of this post{% else %}Admin Moderation Tools{% endif %}
+          </span>
+
+          <div class="d-flex gap-2">
+            {% if is_owner and item.type == 'found' and item.status == 'Claimed' %}
+            <form method="POST" action="{{ url_for('return_item', item_id=item.id) }}" class="d-inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="btn btn-success btn-sm">
+                <i class="fa-solid fa-circle-check me-1"></i> Mark as Returned
+              </button>
+            </form>
+            {% endif %}
+
+            <a href="{{ url_for('edit_item', item_id=item.id) }}" class="btn btn-outline-secondary btn-sm">
+              <i class="fa-solid fa-pen-to-square me-1"></i> Edit Post
+            </a>
+
+            <form method="POST" action="{{ url_for('delete_item', item_id=item.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fa-solid fa-trash me-1"></i> Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Column: Claim & Auto-Match Panel -->
+    <div class="col-lg-5">
+
+      <!-- Found Item Verification & Claim Card -->
+      {% if item.type == 'found' %}
+      <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+        <div class="p-3" style="background: linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-navy) 100%); color: #ffffff;">
+          <h5 class="fw-bold mb-0">
+            <i class="fa-solid fa-shield-halved text-teal me-2"></i>Ownership Verification
+          </h5>
+        </div>
+
+        <div class="card-body p-4">
+          {% if claim_approved %}
+            <!-- APPROVED CLAIM: Contact Revealed -->
+            <div class="alert alert-success border-success" role="alert">
+              <h5 class="fw-bold mb-2"><i class="fa-solid fa-circle-check me-2"></i>Claim Approved!</h5>
+              <p class="small mb-3">Your answer was verified successfully. Please contact the finder directly to collect your property:</p>
+              
+              <div class="p-3 bg-white rounded border">
+                <div class="fw-bold text-navy fs-6">{{ item.user_name }}</div>
+                <div class="text-teal small mb-2"><i class="fa-solid fa-envelope me-1"></i>{{ item.user_email }}</div>
+                <a href="mailto:{{ item.user_email }}?subject=CampusFind: Claim for {{ item.title }}" class="btn btn-teal btn-sm w-100">
+                  <i class="fa-solid fa-paper-plane me-1"></i> Email Finder Now
+                </a>
+              </div>
+            </div>
+
+          {% elif is_owner %}
+            <div class="alert alert-info small mb-0">
+              <i class="fa-solid fa-info-circle me-1"></i> <strong>You reported this item.</strong> 
+              When a student answers your secret question correctly, you will receive an in-app notification.
+            </div>
+
+          {% elif item.status in ('Claimed', 'Returned') %}
+            <div class="alert alert-secondary small mb-0">
+              <i class="fa-solid fa-lock me-1"></i> This item has already been marked as <strong>{{ item.status }}</strong>.
+            </div>
+
+          {% elif not current_user %}
+            <div class="text-center py-3">
+              <i class="fa-solid fa-lock text-muted fs-2 mb-2"></i>
+              <h6 class="fw-bold text-navy">Is this your item?</h6>
+              <p class="small text-muted mb-3">Log in to answer the secret verification question and claim this item.</p>
+              <a href="{{ url_for('login', next=request.path) }}" class="btn btn-teal btn-sm px-4">
+                Log In to Claim
+              </a>
+            </div>
+
+          {% else %}
+            <!-- Verification Question Form -->
+            {% set attempts_used = claim_record.attempts if claim_record else 0 %}
+            {% if attempts_used >= 3 %}
+              <div class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-ban me-2"></i>
+                <strong>Claim Locked:</strong> You have exceeded the maximum of 3 failed attempts for this item.
+              </div>
+            {% else %}
+              <h6 class="fw-bold text-navy mb-2">Answer Secret Verification Question</h6>
+              <p class="small text-muted mb-3">
+                To confirm genuine ownership, please answer the question below set by the finder:
+              </p>
+
+              <div class="p-3 bg-light rounded-3 mb-3 border">
+                <span class="small text-muted d-block mb-1">Verification Question:</span>
+                <strong class="text-navy fs-6">{{ item.verification_question or 'Describe unique identifying features.' }}</strong>
+              </div>
+
+              <form method="POST" action="{{ url_for('claim_item', item_id=item.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                <div class="mb-3">
+                  <label for="verification_answer" class="form-label small fw-semibold">Your Answer</label>
+                  <input type="text" class="form-control" id="verification_answer" name="verification_answer" placeholder="Enter your answer" required autocomplete="off">
+                  <div class="form-text small">
+                    Attempts: <strong>{{ attempts_used }} of 3 used</strong> ({{ 3 - attempts_used }} remaining).
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-teal w-100 py-2 fw-semibold">
+                  <i class="fa-solid fa-key me-1"></i> Submit Verification Answer
+                </button>
+              </form>
+            {% endif %}
+
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Ranked Auto-Matches Panel -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-navy">
+            <i class="fa-solid fa-wand-magic-sparkles text-teal me-2"></i>Smart Matches
+          </h5>
+          <span class="badge bg-teal rounded-pill">{{ matches | length }}</span>
+        </div>
+
+        <div class="card-body p-3">
+          {% if matches %}
+            <p class="small text-muted mb-3">
+              Items matching this report based on category, location, date, and description keywords:
+            </p>
+            {% for m in matches %}
+            <div class="match-card">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 class="fw-bold text-navy text-truncate mb-0" style="max-width: 200px;">{{ m.title }}</h6>
+                <span class="match-score-badge">{{ m.score }}% Match</span>
+              </div>
+              <div class="small text-muted mb-2">
+                <i class="fa-solid fa-location-dot text-danger me-1"></i>{{ m.location }} &bull; {{ m.date }}
+              </div>
+              <a href="{{ url_for('item_detail', item_id=m.id) }}" class="btn btn-outline-teal btn-sm w-100">
+                View Matched Item <i class="fa-solid fa-arrow-right ms-1"></i>
+              </a>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-4 text-muted small">
+              <i class="fa-solid fa-circle-nodes fs-3 mb-2 d-block opacity-50"></i>
+              No active matches found with score &ge; 60% yet. The system will continue scanning newly posted reports!
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

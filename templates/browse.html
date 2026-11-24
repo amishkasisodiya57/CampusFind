@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Search & Browse - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="h2 fw-bold text-navy mb-1">Campus Directory</h1>
+      <p class="text-muted mb-0">Search and filter active lost and found listings across campus.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('post_item', type='lost') }}" class="btn btn-outline-danger btn-sm">
+        <i class="fa-solid fa-plus me-1"></i> Post Lost
+      </a>
+      <a href="{{ url_for('post_item', type='found') }}" class="btn btn-teal btn-sm">
+        <i class="fa-solid fa-plus me-1"></i> Post Found
+      </a>
+    </div>
+  </div>
+
+  <!-- Search & Filter Card -->
+  <div class="filter-card">
+    <form method="GET" action="{{ url_for('browse') }}" class="row g-3">
+      <!-- Keyword search -->
+      <div class="col-lg-4 col-md-12">
+        <label for="q" class="form-label small fw-bold text-secondary">Keyword Search</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+          <input type="text" class="form-control" id="q" name="q" value="{{ keyword }}" placeholder="Title, description, location...">
+        </div>
+      </div>
+
+      <!-- Type filter -->
+      <div class="col-lg-2 col-md-3 col-6">
+        <label for="type" class="form-label small fw-bold text-secondary">Type</label>
+        <select class="form-select" id="type" name="type">
+          <option value="">All Types</option>
+          <option value="lost" {% if selected_type == 'lost' %}selected{% endif %}>Lost Items</option>
+          <option value="found" {% if selected_type == 'found' %}selected{% endif %}>Found Items</option>
+        </select>
+      </div>
+
+      <!-- Category filter -->
+      <div class="col-lg-2 col-md-3 col-6">
+        <label for="category" class="form-label small fw-bold text-secondary">Category</label>
+        <select class="form-select" id="category" name="category">
+          <option value="">All Categories</option>
+          {% for cat in valid_categories %}
+            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Location filter -->
+      <div class="col-lg-2 col-md-3 col-6">
+        <label for="location" class="form-label small fw-bold text-secondary">Campus Location</label>
+        <input type="text" class="form-control" id="location" name="location" value="{{ selected_location }}" placeholder="e.g. Library, Canteen">
+      </div>
+
+      <!-- Date filter -->
+      <div class="col-lg-2 col-md-3 col-6">
+        <label for="date" class="form-label small fw-bold text-secondary">Date</label>
+        <input type="date" class="form-control" id="date" name="date" value="{{ selected_date }}">
+      </div>
+
+      <!-- Filter Actions -->
+      <div class="col-12 d-flex justify-content-between align-items-center pt-2 border-top">
+        <div class="text-muted small">
+          Showing <strong>{{ items | length }}</strong> listing(s)
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('browse') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fa-solid fa-rotate-left me-1"></i> Reset
+          </a>
+          <button type="submit" class="btn btn-teal btn-sm px-3">
+            <i class="fa-solid fa-filter me-1"></i> Apply Filters
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Listings Grid -->
+  {% if items %}
+  <div class="row g-4">
+    {% for item in items %}
+    <div class="col-md-6 col-lg-4">
+      <div class="item-card">
+        <div class="item-card-img-wrap">
+          {% if item.photo_path %}
+            <img src="{{ url_for('static', filename=item.photo_path) }}" alt="{{ item.title }}" class="item-card-img">
+          {% else %}
+            <div class="item-card-placeholder">
+              {% if item.category == 'ID card' %}
+                <i class="fa-solid fa-id-card"></i>
+              {% elif item.category == 'electronics' %}
+                <i class="fa-solid fa-laptop"></i>
+              {% elif item.category == 'books' %}
+                <i class="fa-solid fa-book"></i>
+              {% elif item.category == 'keys' %}
+                <i class="fa-solid fa-key"></i>
+              {% elif item.category == 'bottle' %}
+                <i class="fa-solid fa-bottle-water"></i>
+              {% elif item.category == 'clothing' %}
+                <i class="fa-solid fa-shirt"></i>
+              {% else %}
+                <i class="fa-solid fa-box-open"></i>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <span class="badge-type {% if item.type == 'lost' %}badge-type-lost{% else %}badge-type-found{% endif %}">
+            {{ item.type | upper }}
+          </span>
+        </div>
+
+        <div class="item-card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge bg-secondary-subtle text-dark border">{{ item.category }}</span>
+            <span class="badge-status status-{{ item.status | lower }}">{{ item.status }}</span>
+          </div>
+
+          <h4 class="item-title text-truncate">{{ item.title }}</h4>
+
+          <div class="item-meta">
+            <span><i class="fa-solid fa-location-dot text-danger me-1"></i>{{ item.location }}</span>
+            <span>&bull;</span>
+            <span><i class="fa-regular fa-calendar text-teal me-1"></i>{{ item.date }}</span>
+          </div>
+
+          <p class="item-desc">{{ item.description | truncate(110) }}</p>
+
+          <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-auto">
+            <small class="text-muted">By {{ item.user_name }}</small>
+            <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-sm btn-teal">
+              View &amp; Claim <i class="fa-solid fa-chevron-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <!-- Empty State -->
+  <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+    <div class="p-3 rounded-circle bg-light d-inline-block mb-3">
+      <i class="fa-solid fa-magnifying-glass fs-1 text-muted"></i>
+    </div>
+    <h4 class="fw-bold text-navy">No Matching Items Found</h4>
+    <p class="text-muted mb-4" style="max-width: 480px; margin: 0 auto;">
+      We couldn't find any posts matching your current filters. Try adjusting your search keywords, clear filters, or report a new item.
+    </p>
+    <div class="d-flex justify-content-center gap-2">
+      <a href="{{ url_for('browse') }}" class="btn btn-outline-secondary">Reset Filters</a>
+      <a href="{{ url_for('post_item', type='lost') }}" class="btn btn-teal">Post an Item</a>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - CampusFind{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <h1 class="h2 fw-bold text-navy mb-1">Notifications</h1>
+          <p class="text-muted mb-0">Stay informed about match results, claim updates, and platform activity.</p>
+        </div>
+
+        {% if unread_count > 0 %}
+        <form method="POST" action="{{ url_for('mark_all_notifications_read') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="btn btn-outline-teal btn-sm">
+            <i class="fa-solid fa-check-double me-1"></i> Mark All as Read
+          </button>
+        </form>
+        {% endif %}
+      </div>
+
+      {% if notifications %}
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <ul class="list-group list-group-flush">
+          {% for n in notifications %}
+          <li class="list-group-item p-3 d-flex align-items-start gap-3 {% if n.is_read == 0 %}bg-light border-start border-4 border-teal{% endif %}">
+            <div class="p-2 rounded-circle {% if 'Smart Match' in n.message %}bg-warning bg-opacity-25 text-warning{% elif 'claimed' in n.message or 'verified' in n.message %}bg-success bg-opacity-25 text-success{% else %}bg-info bg-opacity-25 text-info{% endif %} fs-5">
+              {% if 'Smart Match' in n.message %}
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              {% elif 'claimed' in n.message or 'verified' in n.message %}
+                <i class="fa-solid fa-shield-halved"></i>
+              {% else %}
+                <i class="fa-solid fa-bell"></i>
+              {% endif %}
+            </div>
+
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted">{{ n.timestamp }}</span>
+                {% if n.is_read == 0 %}
+                  <span class="badge bg-teal rounded-pill" style="font-size: 0.65rem;">NEW</span>
+                {% endif %}
+              </div>
+              <p class="mb-1 text-navy fw-medium small">{{ n.message }}</p>
+
+              {% if 'Smart Match' in n.message %}
+                <a href="{{ url_for('my_posts') }}" class="btn btn-sm btn-outline-teal mt-1 py-0 px-2" style="font-size: 0.8rem;">
+                  View Matches in My Posts &rarr;
+                </a>
+              {% endif %}
+            </div>
+
+            {% if n.is_read == 0 %}
+            <form method="POST" action="{{ url_for('mark_notification_read', notif_id=n.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="btn btn-sm btn-link text-muted p-0" title="Mark as read">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </form>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+        <div class="p-3 rounded-circle bg-light d-inline-block mb-3">
+          <i class="fa-regular fa-bell-slash fs-1 text-muted"></i>
+        </div>
+        <h4 class="fw-bold text-navy">No Notifications Yet</h4>
+        <p class="text-muted mb-0">You're all caught up! When an item matches your report, alerts will appear here.</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
